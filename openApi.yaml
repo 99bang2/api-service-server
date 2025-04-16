@@ -1,0 +1,371 @@
+openapi: 3.0.0
+info:
+  title: MobilX 카멜레온 장소정보 제공 API
+  description: 모빌엑스에서 제공하는 주차장, 충전소, 주유소, 세차장 정보
+  version: 1.0.0
+servers:
+  - url: https://api.mobilx.co.kr/api/carmeleon
+    description: 개발서버
+  - url: http://localhost:4000/api/carmeleon
+    description: 로컬개발용
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: ak
+  schemas:
+    ParkingSite:
+      properties:
+        uid:
+          description: 주차장 고유번호
+          type: integer
+        name:
+          description: 주차장명
+          type: string
+        lat:
+          description: 주차장 위도
+          type: number
+        lon:
+          description: 주차장 경도
+          type: number
+        address:
+          description: 주차장 주소
+          type: string
+        optionTag:
+          description: 주차장 옵션 태그
+          type: array
+          items:
+            type: string
+        price:
+          description: 주차장 시간당 가격
+          type: string
+        priceInfo:
+          description: 주차장 요금 상세정보
+          type: string
+        picture:
+          description: 주차장 사진 url
+          type: array
+          items:
+            type: string
+        operationTime:
+          description: 주차장 운영시간
+          type: string
+
+    EvChargeStation:
+      properties:
+        uid:
+          description: 충전소 고유번호
+          type: integer
+        statNm:
+          description: 충전소 이름
+          type: string
+        statId:
+          description: 충전소 아이디
+          type: string
+        addr:
+          description: 충전소 주소
+          type: string
+        useTime:
+          description: 충전소 운영시간
+          type: string
+        busiId:
+          description: 사업자 ID
+          type: string
+        busiNm:
+          description: 사업자 명
+          type: string
+        busiCall:
+          description: 사업자 연락처
+          type: string
+        lat:
+          description: 충전소 위도
+          type: number
+        lon:
+          description: 충전소 경도
+          type: number
+        picture:
+          description: 충전소 사진
+          type: array
+          items:
+            type: string
+        tag:
+          description: 충전소 옵션태그
+          type: array
+          items:
+            type: string
+        evTypeName:
+          description: 충전소 테슬라정보
+          type: string
+        stall:
+          description: 충전기 총 개수
+          type: integer
+        availableStall:
+          description: 충전가능한 충전기 개수
+          type: integer
+        info:
+          description: 테슬라 충전소 정보
+          type: string
+        updateTime:
+          description: 충전소 정보 업데이트 시간
+          type: string
+        evChargers:
+          description: 충전기 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/EvCharger'
+    EvCharger:
+      properties:
+        uid:
+          description: 충전기 고유번호
+          type: integer
+        statId:
+          description: 충전소 정보
+          type: string
+        statName:
+          description: 충전기 상태정보 명칭
+          type: string
+        chgerId:
+          description: 충전기 아이디
+          type: string
+        chgerTypeName:
+          description: 충전기 타입이름
+          type: string
+        statUpdDt:
+          description: 충전기 상태 업데이트 시간
+          type: string
+
+
+    GasStation:
+      properties:
+        uid:
+          description: 주유소 고유번호
+          type: integer
+        gasStationName:
+          description: 주유소 이름
+          type: string
+        gasStationUid:
+          description: 주유소 아이디
+          type: string
+        brandCodeName:
+          description: 주유소 브랜드
+          type: string
+        address:
+          description: 주유소 주소
+          type: string
+        tel:
+          description: 주유소 전화번호
+          type: string
+        lat:
+          description: 주유소 위도
+          type: number
+        lon:
+          description: 주유소 경도
+          type: number
+        tagName:
+          description: 주유소 옵션 태그
+          type: array
+          items:
+            type: string
+        Gasoline:
+          description: 휘발유 가격
+          type: number
+        Diesel:
+          description: 경유 가격
+          type: number
+        PremiumGasoline:
+          description: 고급유 가격
+          type: number
+        HeatingOil:
+          description: 등유 가격
+          type: number
+        lpg:
+          description: lpg 가격
+          type: number
+    CarWash:
+      properties:
+        uid:
+          description: 세차장 고유번호
+          type: integer
+        carWashName:
+          description: 세차장 이름
+          type: string
+        carWashType:
+          description: 세차장 유형
+          type: string
+        address:
+          description: 세차장 주소
+          type: string
+        closedDay:
+          description: 휴무일
+          type: string
+        weekdayOperOpenHhmm:
+          description: 주중 오픈시간
+          type: string
+        weekdayOperCloseHhmm:
+          description: 주중 클로즈시간
+          type: string
+        holidayOperOpenHhmm:
+          description: 주말 오픈시간
+          type: string
+        holidayOperCloseHhmm:
+          description: 주말 클로즈시간
+          type: string
+        carWashChargeInfo:
+          description: 세차 요금정보
+          type: string
+        phoneNumber:
+          description: 세차장 전화번호
+          type: string
+        lat:
+          description: 세차장 위도
+          type: number
+        lon:
+          description: 세차장 경도
+          type: number
+        picture:
+          description: 세차장 사진
+          type: array
+          items:
+            type: string
+paths:
+  /parkingSite:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      summary: 주차장 장소 정보 제공
+      description: 페이지와 제한값에 따라 정보조회
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            format: integer
+          description: 조회하는 페이지 미입력 시, page = 1
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: integer
+          description: 한번에 조회하는 수 미입력 시, limit = 1000 (max = 1000)
+      responses:
+        '200':
+          description: 주차장 정보 JSON array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingSite'
+        '400':
+          description: 잘못된 요청
+        '401':
+          description: 비인가 유저, ak 확인
+        '430':
+          description: 일일 조회 한도 초과
+
+  /evChargeStation:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      summary: 충전소 장소 정보 제공
+      description: 페이지와 제한값에 따라 정보조회
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            format: integer
+          description: 조회하는 페이지 미입력 시, page = 1
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: integer
+          description: 한번에 조회하는 수 미입력 시, limit = 1000 (max = 1000)
+      responses:
+        '200':
+          description: 충전소 정보 JSON array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EvChargeStation'
+        '400':
+          description: 잘못된 요청
+        '401':
+          description: 비인가 유저, ak 확인
+        '430':
+          description: 일일 조회 한도 초과
+
+  /gasStation:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      summary: 주유소 장소 정보 제공
+      description: 페이지와 제한값에 따라 정보조회
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            format: integer
+          description: 조회하는 페이지 미입력 시, page = 1
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: integer
+          description: 한번에 조회하는 수 미입력 시, limit = 1000 (max = 1000)
+      responses:
+        '200':
+          description: 주유소 정보 JSON array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GasStation'
+        '400':
+          description: 잘못된 요청
+        '401':
+          description: 비인가 유저, ak 확인
+        '430':
+          description: 일일 조회 한도 초과
+  /carWash:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      summary: 세차장 장소 정보 제공
+      description: 페이지와 제한값에 따라 정보조회
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            format: integer
+          description: 조회하는 페이지 미입력 시, page = 1
+        - in: query
+          name: limit
+          schema:
+            type: number
+            format: integer
+          description: 한번에 조회하는 수 미입력 시, limit = 1000 (max = 1000)
+      responses:
+        '200':
+          description: 세차장 정보 JSON array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarWash'
+        '400':
+          description: 잘못된 요청
+        '401':
+          description: 비인가 유저, ak 확인
+        '430':
+          description: 일일 조회 한도 초과
+
+
